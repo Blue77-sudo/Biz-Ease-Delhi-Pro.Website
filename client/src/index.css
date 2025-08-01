@@ -1,0 +1,229 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(250, 50%, 98%);
+  --foreground: hsl(210, 40%, 15%);
+  --muted: hsl(210, 40%, 96%);
+  --muted-foreground: hsl(215, 16%, 47%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(210, 40%, 15%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(210, 40%, 15%);
+  --border: hsl(214, 32%, 91%);
+  --input: hsl(214, 32%, 91%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(210, 40%, 96%);
+  --secondary-foreground: hsl(222, 47%, 11%);
+  --accent: hsl(210, 40%, 96%);
+  --accent-foreground: hsl(222, 47%, 11%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --ring: hsl(207, 90%, 54%);
+  --radius: 0.5rem;
+  
+  /* Government specific colors */
+  --gov-blue-50: hsl(207, 89%, 96%);
+  --gov-blue-100: hsl(207, 89%, 91%);
+  --gov-blue-500: hsl(207, 90%, 54%);
+  --gov-blue-600: hsl(207, 90%, 44%);
+  --gov-blue-700: hsl(207, 90%, 34%);
+  --gov-orange-500: hsl(24, 100%, 50%);
+  --gov-orange-600: hsl(24, 100%, 45%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+    background-color: #FAFAFA;
+  }
+}
+
+@layer components {
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .nav-gradient {
+    background: linear-gradient(135deg, var(--gov-blue-500) 0%, var(--gov-blue-700) 100%);
+  }
+  
+  .card-hover {
+    transition: all 0.3s ease;
+  }
+  
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  .chat-bubble-user {
+    background: linear-gradient(135deg, var(--gov-blue-50) 0%, var(--gov-blue-100) 100%);
+    border-radius: 18px 18px 4px 18px;
+    margin-left: auto;
+    max-width: 80%;
+  }
+  
+  .chat-bubble-ai {
+    background: linear-gradient(135deg, var(--gov-blue-500) 0%, var(--gov-blue-700) 100%);
+    border-radius: 18px 18px 18px 4px;
+    color: white;
+    max-width: 80%;
+  }
+  
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .status-pending {
+    background-color: hsl(38, 92%, 92%);
+    color: hsl(38, 92%, 45%);
+  }
+  
+  .status-approved {
+    background-color: hsl(120, 60%, 92%);
+    color: hsl(120, 60%, 25%);
+  }
+  
+  .status-rejected {
+    background-color: hsl(0, 84%, 92%);
+    color: hsl(0, 84%, 35%);
+  }
+  
+  .metric-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid;
+  }
+  
+  .metric-primary { border-left-color: var(--gov-blue-500); }
+  .metric-warning { border-left-color: var(--gov-orange-500); }
+  .metric-success { border-left-color: hsl(120, 60%, 50%); }
+  .metric-info { border-left-color: hsl(180, 100%, 38%); }
+  
+  .notification-dot {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background: var(--gov-orange-500);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  
+  .loading-spinner {
+    border: 3px solid rgba(59, 130, 246, 0.1);
+    border-top: 3px solid rgb(59, 130, 246);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .floating-action-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gov-orange-500) 0%, var(--gov-orange-600) 100%);
+    box-shadow: 0 4px 16px rgba(255, 111, 0, 0.4);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .floating-action-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(255, 111, 0, 0.6);
+  }
+  
+  .mobile-nav-slide {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .mobile-nav-slide.open {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .floating-action-btn {
+    bottom: 5rem;
+    right: 1rem;
+  }
+  
+  .desktop-only {
+    display: none !important;
+  }
+  
+  .mobile-only {
+    display: block !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .desktop-only {
+    display: block !important;
+  }
+  
+  .mobile-only {
+    display: none !important;
+  }
+}
