@@ -243,6 +243,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // DigiLocker Integration
+  app.post("/api/digilocker/connect", async (req, res) => {
+    try {
+      const { userId } = req.body;
+      
+      if (!userId) {
+        return res.status(400).json({ message: "User ID is required" });
+      }
+
+      // In a real implementation, this would:
+      // 1. Redirect to DigiLocker OAuth endpoint
+      // 2. Handle the callback with authorization code
+      // 3. Exchange code for access token
+      // 4. Store encrypted token for user
+      
+      // For demo purposes, we'll simulate a successful connection
+      res.json({ 
+        success: true, 
+        message: "DigiLocker connected successfully",
+        redirectUrl: "https://digilocker.gov.in/oauth/authorize?client_id=demo&response_type=code&scope=read"
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/digilocker/import", async (req, res) => {
+    try {
+      const { userId, documentType, documentId } = req.body;
+      
+      if (!userId || !documentType || !documentId) {
+        return res.status(400).json({ message: "Missing required parameters" });
+      }
+
+      // In a real implementation, this would:
+      // 1. Use stored access token to call DigiLocker API
+      // 2. Fetch the document from DigiLocker
+      // 3. Store document metadata in our system
+      // 4. Mark as verified since it's from DigiLocker
+
+      // Simulate document import
+      const documentName = documentId === "dl_1" ? "Aadhaar_Card_DigiLocker.pdf" :
+                          documentId === "dl_2" ? "PAN_Card_DigiLocker.pdf" :
+                          documentId === "dl_3" ? "Driving_License_DigiLocker.pdf" :
+                          documentId === "dl_4" ? "Voter_ID_DigiLocker.pdf" :
+                          "Document_DigiLocker.pdf";
+
+      const documentData = {
+        userId,
+        fileName: documentName,
+        fileType: "application/pdf",
+        fileSize: 1024000, // 1MB simulated
+        category: documentType,
+        isVerified: true, // DigiLocker documents are pre-verified
+        source: "digilocker"
+      };
+
+      const document = await storage.createDocument(documentData);
+      res.status(201).json(document);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // AI Chat endpoint
   app.post("/api/ai/chat", async (req, res) => {
     try {
@@ -259,7 +323,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         "msme": "Delhi offers several MSME schemes: 1) MSME Credit Guarantee (collateral-free loans) 2) Technology Upgradation Fund 3) Export promotion schemes 4) Skill development programs. Based on your profile, you're eligible for multiple schemes.",
         "license": "Based on your business type and location, I recommend starting with Shop & Establishment License first, followed by GST registration if turnover exceeds ₹20 lakhs. Would you like me to guide you through the application process?",
         "compliance": "Your current compliance score is excellent at 92%. You have 2 upcoming deadlines: GST Return filing (5 days) and Shop & Establishment renewal (25 days). Would you like me to set reminders?",
-        "default": "I'm here to help with all your business licensing and compliance needs. You can ask me about license applications, GST filing, MSME schemes, compliance deadlines, or any other business-related queries."
+        "digilocker": "DigiLocker integration allows you to instantly access your government-issued documents like Aadhaar, PAN, Driving License, and Passport. These documents are pre-verified and can be used directly in applications. Would you like me to guide you through connecting your DigiLocker account?",
+        "default": "I'm here to help with all your business licensing and compliance needs. You can ask me about license applications, GST filing, MSME schemes, compliance deadlines, DigiLocker integration, or any other business-related queries."
       };
 
       const lowerMessage = message.toLowerCase();

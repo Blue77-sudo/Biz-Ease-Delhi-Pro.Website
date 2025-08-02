@@ -15,7 +15,10 @@ import {
   Eye,
   CheckCircle,
   AlertTriangle,
-  FolderOpen
+  FolderOpen,
+  Link,
+  Shield,
+  Download
 } from "lucide-react";
 import { useAuthStore } from "@/lib/auth";
 import { translations } from "@/lib/translations";
@@ -31,6 +34,8 @@ export default function DocumentsPage() {
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [isDigiLockerConnected, setIsDigiLockerConnected] = useState(false);
+  const [showDigiLockerDocs, setShowDigiLockerDocs] = useState(false);
 
   const { data: documents, isLoading } = useQuery({
     queryKey: ["/api/documents", user?.id],
@@ -78,6 +83,46 @@ export default function DocumentsPage() {
     },
   });
 
+  const connectDigiLockerMutation = useMutation({
+    mutationFn: () => apiRequest("POST", "/api/digilocker/connect", { userId: user?.id }),
+    onSuccess: () => {
+      setIsDigiLockerConnected(true);
+      toast({
+        title: "Success",
+        description: "DigiLocker connected successfully!",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to connect to DigiLocker. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const importDigiLockerDocMutation = useMutation({
+    mutationFn: (docData: any) => apiRequest("POST", "/api/digilocker/import", { 
+      userId: user?.id, 
+      documentType: docData.type,
+      documentId: docData.id 
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
+      toast({
+        title: "Success",
+        description: "Document imported from DigiLocker successfully!",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to import document from DigiLocker.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     setSelectedFiles(files);
@@ -109,6 +154,14 @@ export default function DocumentsPage() {
     if (window.confirm("Are you sure you want to delete this document?")) {
       deleteDocumentMutation.mutate(documentId);
     }
+  };
+
+  const handleConnectDigiLocker = () => {
+    connectDigiLockerMutation.mutate();
+  };
+
+  const handleImportFromDigiLocker = (docType: string, docId: string) => {
+    importDigiLockerDocMutation.mutate({ type: docType, id: docId });
   };
 
   const getFileIcon = (fileType: string) => {
@@ -158,6 +211,49 @@ export default function DocumentsPage() {
       uploadDate: "2025-07-05",
       category: "identity",
       isVerified: false
+    }
+  ];
+
+  const digiLockerDocuments = [
+    {
+      id: "dl_1",
+      name: "Aadhaar Card",
+      type: "identity",
+      issuer: "UIDAI",
+      validUntil: "Permanent",
+      isAvailable: true
+    },
+    {
+      id: "dl_2", 
+      name: "PAN Card",
+      type: "identity",
+      issuer: "Income Tax Department",
+      validUntil: "Permanent",
+      isAvailable: true
+    },
+    {
+      id: "dl_3",
+      name: "Driving License",
+      type: "identity", 
+      issuer: "RTO Delhi",
+      validUntil: "2028-03-15",
+      isAvailable: true
+    },
+    {
+      id: "dl_4",
+      name: "Voter ID",
+      type: "identity",
+      issuer: "Election Commission",
+      validUntil: "Permanent", 
+      isAvailable: true
+    },
+    {
+      id: "dl_5",
+      name: "Passport",
+      type: "identity",
+      issuer: "MEA",
+      validUntil: "2030-12-10",
+      isAvailable: false
     }
   ];
 
@@ -254,6 +350,109 @@ export default function DocumentsPage() {
             <Upload className="h-4 w-4 mr-2" />
             Upload Documents
           </Button>
+        </CardContent>
+      </Card>
+
+      {/* DigiLocker Integration */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Shield className="h-5 w-5 text-blue-600" />
+            <span>DigiLocker Integration</span>
+          </CardTitle>
+          <CardDescription>
+            Connect to DigiLocker to access your government-issued digital documents instantly.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {!isDigiLockerConnected ? (
+            <div className="text-center py-8 border-2 border-dashed border-gray-200 rounded-lg">
+              <Shield className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Connect to DigiLocker</h3>
+              <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                Access your Aadhaar, PAN, Driving License, and other government documents directly from DigiLocker.
+              </p>
+              <Button 
+                onClick={handleConnectDigiLocker}
+                disabled={connectDigiLockerMutation.isPending}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                {connectDigiLockerMutation.isPending && (
+                  <div className="loading-spinner mr-2" />
+                )}
+                <Link className="h-4 w-4 mr-2" />
+                Connect DigiLocker
+              </Button>
+              <div className="mt-4 text-xs text-gray-500">
+                <p>✓ Secure OAuth 2.0 authentication</p>
+                <p>✓ Government-verified documents</p>
+                <p>✓ No document upload required</p>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <div>
+                    <p className="font-medium text-green-900">DigiLocker Connected</p>
+                    <p className="text-sm text-green-700">Your digital documents are now accessible</p>
+                  </div>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setShowDigiLockerDocs(!showDigiLockerDocs)}
+                >
+                  {showDigiLockerDocs ? "Hide" : "View"} Documents
+                </Button>
+              </div>
+
+              {showDigiLockerDocs && (
+                <div className="space-y-3">
+                  <h4 className="font-medium text-gray-900">Available Documents</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {digiLockerDocuments.map((doc) => (
+                      <div key={doc.id} className="border border-gray-200 rounded-lg p-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-2">
+                              <FileText className="h-4 w-4 text-blue-600" />
+                              <span className="font-medium text-gray-900">{doc.name}</span>
+                              {doc.isAvailable && (
+                                <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                                  Available
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-xs text-gray-600">Issued by: {doc.issuer}</p>
+                            <p className="text-xs text-gray-600">Valid until: {doc.validUntil}</p>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={!doc.isAvailable || importDigiLockerDocMutation.isPending}
+                            onClick={() => handleImportFromDigiLocker(doc.type, doc.id)}
+                            className="ml-2"
+                          >
+                            {importDigiLockerDocMutation.isPending ? (
+                              <div className="loading-spinner mr-1" />
+                            ) : (
+                              <Download className="h-3 w-3 mr-1" />
+                            )}
+                            Import
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="text-xs text-gray-500 p-3 bg-blue-50 rounded-lg">
+                    <p><strong>Note:</strong> Documents imported from DigiLocker are automatically verified and can be used for all government applications.</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
 

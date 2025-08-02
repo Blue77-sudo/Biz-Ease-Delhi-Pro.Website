@@ -268,7 +268,7 @@ export class MemStorage implements IStorage {
     return Array.from(this.documents.values()).filter(doc => doc.userId === userId);
   }
 
-  async createDocument(document: InsertDocument): Promise<Document> {
+  async createDocument(document: InsertDocument & { isVerified?: boolean; source?: string }): Promise<Document> {
     const id = randomUUID();
     const newDocument: Document = {
       id,
@@ -278,7 +278,7 @@ export class MemStorage implements IStorage {
       fileSize: document.fileSize,
       category: document.category || null,
       uploadDate: new Date(),
-      isVerified: false
+      isVerified: document.isVerified || false
     };
     this.documents.set(id, newDocument);
     return newDocument;
