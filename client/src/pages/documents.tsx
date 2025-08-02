@@ -36,6 +36,8 @@ export default function DocumentsPage() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isDigiLockerConnected, setIsDigiLockerConnected] = useState(false);
   const [showDigiLockerDocs, setShowDigiLockerDocs] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState<any>(null);
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
 
   const { data: documents, isLoading } = useQuery({
     queryKey: ["/api/documents", user?.id],
@@ -160,8 +162,44 @@ export default function DocumentsPage() {
     connectDigiLockerMutation.mutate();
   };
 
-  const handleImportFromDigiLocker = (docType: string, docId: string) => {
-    importDigiLockerDocMutation.mutate({ type: docType, id: docId });
+  const handleImportFromDigiLocker = (type: string, id: string) => {
+    importDigiLockerDocMutation.mutate({ type, id });
+  };
+
+  const processPaymentMutation = useMutation({
+    mutationFn: (paymentData: any) => apiRequest("POST", "/api/documents/payment", paymentData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
+      setShowPaymentDialog(false);
+      setSelectedDocument(null);
+      toast({
+        title: "Payment Successful",
+        description: "Your document processing fee has been paid successfully!",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Payment Failed",
+        description: "Failed to process payment. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handlePayment = (document: any) => {
+    setSelectedDocument(document);
+    setShowPaymentDialog(true);
+  };
+
+  const processPayment = () => {
+    if (!selectedDocument) return;
+
+    processPaymentMutation.mutate({
+      documentId: selectedDocument.id,
+      userId: user?.id,
+      amount: selectedDocument.processingFee || 500,
+      paymentMethod: "online"
+    });
   };
 
   const getFileIcon = (fileType: string) => {
@@ -198,19 +236,25 @@ export default function DocumentsPage() {
       id: "1",
       fileName: "Business_Registration_Certificate.pdf",
       fileType: "application/pdf",
-      fileSize: 2048576,
-      uploadDate: "2025-07-10",
+      fileSize: 1024000,
       category: "business",
-      isVerified: true
+      uploadedAt: "2025-01-01T10:00:00Z",
+      isVerified: true,
+      source: "upload",
+      approvalStatus: "approved_pending_payment",
+      processingFee: 750
     },
     {
-      id: "2",
-      fileName: "Owner_Aadhaar.jpg",
-      fileType: "image/jpeg",
-      fileSize: 1024000,
-      uploadDate: "2025-07-05",
-      category: "identity",
-      isVerified: false
+      id: "2", 
+      fileName: "GST_Certificate.pdf",
+      fileType: "application/pdf",
+      fileSize: 512000,
+      category: "tax",
+      uploadedAt: "2025-01-02T10:00:00Z",
+      isVerified: true,
+      source: "upload",
+      approvalStatus: "approved",
+      processingFee: 0
     }
   ];
 
@@ -306,7 +350,7 @@ export default function DocumentsPage() {
                 Supported formats: PDF, DOC, DOCX, JPG, PNG (Max 10MB per file)
               </p>
             </div>
-            
+
             <div>
               <Label>Document Category</Label>
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
@@ -493,13 +537,13 @@ export default function DocumentsPage() {
                         )}
                       </div>
                     </div>
-                    
+
                     <div className="mb-3">
                       <Badge variant="outline" className="text-xs">
                         {documentCategories.find(cat => cat.value === document.category)?.label || document.category}
                       </Badge>
                     </div>
-                    
+
                     <div className="flex space-x-2">
                       <Button size="sm" variant="outline" className="flex-1">
                         <Eye className="h-4 w-4 mr-1" />

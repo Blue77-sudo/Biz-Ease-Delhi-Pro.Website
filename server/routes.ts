@@ -307,6 +307,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Document payment processing
+  app.post("/api/documents/payment", async (req, res) => {
+    try {
+      const { documentId, userId, amount, paymentMethod } = req.body;
+      
+      if (!documentId || !userId || !amount) {
+        return res.status(400).json({ message: "Missing required payment parameters" });
+      }
+
+      // In a real implementation, this would:
+      // 1. Integrate with payment gateway (Razorpay, Paytm, etc.)
+      // 2. Process the payment securely
+      // 3. Update document status after successful payment
+      // 4. Send confirmation emails/SMS
+      
+      // Simulate payment processing
+      const paymentResult = {
+        transactionId: `TXN${Date.now()}`,
+        status: "success",
+        amount: amount,
+        paymentMethod: paymentMethod,
+        timestamp: new Date().toISOString()
+      };
+
+      // Update document status to indicate payment completed
+      // This would update the document in your database
+      
+      res.status(200).json({
+        success: true,
+        message: "Payment processed successfully",
+        transaction: paymentResult
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Payment processing failed" });
+    }
+  });
+
   // AI Chat endpoint
   app.post("/api/ai/chat", async (req, res) => {
     try {
