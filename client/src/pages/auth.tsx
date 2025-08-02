@@ -15,9 +15,11 @@ export default function AuthPage() {
   const [, setLocation] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isRegister, setIsRegister] = useState(false);
   const [credentials, setCredentials] = useState({
     username: "",
-    password: ""
+    password: "",
+    email: ""
   });
 
   const { setUser, setBusinessProfile, language } = useAuthStore();
@@ -29,16 +31,28 @@ export default function AuthPage() {
     setError("");
 
     try {
-      const response = await apiRequest("POST", "/api/auth/login", credentials);
+      const endpoint = isRegister ? "/api/auth/register" : "/api/auth/login";
+      const payload = isRegister 
+        ? { username: credentials.username, password: credentials.password, email: credentials.email }
+        : { username: credentials.username, password: credentials.password };
+      
+      const response = await apiRequest("POST", endpoint, payload);
       const data = await response.json();
 
-      setUser(data.user);
-      if (data.businessProfile) {
-        setBusinessProfile(data.businessProfile);
+      if (isRegister) {
+        setError("");
+        setIsRegister(false);
+        setCredentials({ username: "", password: "", email: "" });
+        // Show success message or auto-switch to login
+      } else {
+        setUser(data.user);
+        if (data.businessProfile) {
+          setBusinessProfile(data.businessProfile);
+        }
+        setLocation("/dashboard");
       }
-      setLocation("/dashboard");
     } catch (error: any) {
-      setError(error.message || "Login failed. Please check your credentials.");
+      setError(error.message || (isRegister ? "Registration failed." : "Login failed. Please check your credentials."));
     } finally {
       setIsLoading(false);
     }
@@ -93,6 +107,21 @@ export default function AuthPage() {
               className="w-full"
             />
           </div>
+
+          {isRegister && (
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={credentials.email}
+                onChange={(e) => setCredentials(prev => ({ ...prev, email: e.target.value }))}
+                placeholder="Enter your email"
+                required
+                className="w-full"
+              />
+            </div>
+          )}
           
           <div className="space-y-2">
             <Label htmlFor="password">{t.passwordLabel}</Label>
@@ -111,21 +140,35 @@ export default function AuthPage() {
             {isLoading ? (
               <div className="flex items-center space-x-2">
                 <div className="loading-spinner" />
-                <span>Logging in...</span>
+                <span>{isRegister ? "Registering..." : "Logging in..."}</span>
               </div>
             ) : (
               <div className="flex items-center space-x-2">
                 <Building2 className="h-4 w-4" />
-                <span>{t.loginBtn}</span>
+                <span>{isRegister ? "Register" : t.loginBtn}</span>
               </div>
             )}
           </Button>
         </form>
         
-        <div className="text-center mt-6">
-          <a href="#" className="text-blue-600 hover:text-blue-700 text-sm">
-            {t.forgotPasswordLink}
-          </a>
+        <div className="text-center mt-6 space-y-2">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => {
+              setIsRegister(!isRegister);
+              setError("");
+              setCredentials({ username: "", password: "", email: "" });
+            }}
+            className="text-blue-600 hover:text-blue-700 text-sm"
+          >
+            {isRegister ? "Already have an account? Login" : "Don't have an account? Register"}
+          </Button>
+          <div>
+            <a href="#" className="text-blue-600 hover:text-blue-700 text-sm">
+              {t.forgotPasswordLink}
+            </a>
+          </div>
         </div>
       </div>
     </div>
