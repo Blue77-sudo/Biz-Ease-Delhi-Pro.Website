@@ -320,8 +320,7 @@ export default function DocumentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container-desktop page-content">
+    <div className="p-3 sm:p-6 max-w-7xl mx-auto space-y-4 sm:space-y-8">
       {/* Header */}
       <div className="text-center sm:text-left">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Digital Document Vault</h1>
@@ -661,7 +660,7 @@ export default function DocumentsPage() {
               Complete the payment to finalize your document processing.
             </DialogDescription>
           </DialogHeader>
-
+          
           {selectedDocument && (
             <div className="space-y-4">
               <div className="p-4 bg-gray-50 rounded-lg">
@@ -669,7 +668,7 @@ export default function DocumentsPage() {
                 <p className="text-sm text-gray-600 mb-1">File: {selectedDocument.fileName}</p>
                 <p className="text-sm text-gray-600">Category: {documentCategories.find(cat => cat.value === selectedDocument.category)?.label}</p>
               </div>
-
+              
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <div className="flex items-center justify-between">
                   <div>
@@ -709,7 +708,6 @@ export default function DocumentsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
     </div>
   );
 }
