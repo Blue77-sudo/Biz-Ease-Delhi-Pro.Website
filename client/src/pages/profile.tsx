@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -7,344 +6,302 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { Building2, MapPin, Phone, Mail, Globe, Users, Calendar, Edit, Save, X } from "lucide-react";
 import { useAuthStore } from "@/lib/auth";
 import { translations } from "@/lib/translations";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
 
 const profileSchema = z.object({
-  businessName: z.string().min(1, "Business name is required"),
+  companyName: z.string().min(1, "Company name is required"),
   businessType: z.string().min(1, "Business type is required"),
-  gstin: z.string().optional(),
-  udyamNumber: z.string().optional(),
-  businessAddress: z.string().min(1, "Business address is required"),
-  contactEmail: z.string().email("Invalid email address"),
-  contactPhone: z.string().min(10, "Phone number must be at least 10 digits"),
+  address: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
+  state: z.string().min(1, "State is required"),
+  pincode: z.string().min(6, "Valid pincode is required"),
+  phone: z.string().min(10, "Valid phone number is required"),
+  email: z.string().email("Valid email is required"),
+  website: z.string().optional(),
+  employees: z.string().min(1, "Number of employees is required"),
+  establishedYear: z.string().min(4, "Valid year is required"),
+  description: z.string().optional(),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 
 export default function ProfilePage() {
-  const { user, businessProfile, setBusinessProfile, language } = useAuthStore();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const [isEditing, setIsEditing] = useState(false);
+  const { language } = useAuthStore();
   const t = translations[language];
 
-  const { data: profile, isLoading } = useQuery({
-    queryKey: ["/api/profile", user?.id],
-    enabled: !!user?.id,
-  });
-
-  const form = useForm<ProfileFormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      businessName: businessProfile?.businessName || "",
-      businessType: businessProfile?.businessType || "",
-      gstin: businessProfile?.gstin || "",
-      udyamNumber: businessProfile?.udyamNumber || "",
-      businessAddress: businessProfile?.businessAddress || "",
-      contactEmail: businessProfile?.contactEmail || "",
-      contactPhone: businessProfile?.contactPhone || "",
-    },
-  });
-
-  const createProfileMutation = useMutation({
-    mutationFn: (data: ProfileFormData) => 
-      apiRequest("POST", "/api/profile", { ...data, userId: user?.id }),
-    onSuccess: async (response) => {
-      const newProfile = await response.json();
-      setBusinessProfile(newProfile);
-      queryClient.invalidateQueries({ queryKey: ["/api/profile"] });
-      toast({
-        title: "Success",
-        description: "Profile created successfully!",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to create profile. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const updateProfileMutation = useMutation({
-    mutationFn: (data: ProfileFormData) => 
-      apiRequest("PUT", `/api/profile/${user?.id}`, data),
-    onSuccess: async (response) => {
-      const updatedProfile = await response.json();
-      setBusinessProfile(updatedProfile);
-      queryClient.invalidateQueries({ queryKey: ["/api/profile"] });
-      toast({
-        title: "Success",
-        description: "Profile updated successfully!",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update profile. Please try again.",
-        variant: "destructive",
-      });
+      companyName: "Delhi Manufacturing Ltd.",
+      businessType: "Manufacturing",
+      address: "Block A, Industrial Area",
+      city: "New Delhi",
+      state: "Delhi",
+      pincode: "110001",
+      phone: "+91 98765 43210",
+      email: "info@delhimanufacturing.com",
+      website: "www.delhimanufacturing.com",
+      employees: "50-100",
+      establishedYear: "2015",
+      description: "Leading manufacturer of industrial components in Delhi NCR region.",
     },
   });
 
   const onSubmit = (data: ProfileFormData) => {
-    if (businessProfile) {
-      updateProfileMutation.mutate(data);
-    } else {
-      createProfileMutation.mutate(data);
-    }
-  };
-
-  const getProfileCompletion = () => {
-    if (!businessProfile) return 0;
-    
-    const fields = [
-      businessProfile.businessName,
-      businessProfile.businessType,
-      businessProfile.businessAddress,
-      businessProfile.contactEmail,
-      businessProfile.contactPhone,
-      businessProfile.gstin,
-      businessProfile.udyamNumber,
-    ];
-    
-    const filledFields = fields.filter(field => field && field.trim() !== '').length;
-    return Math.round((filledFields / fields.length) * 100);
+    console.log("Profile updated:", data);
+    setIsEditing(false);
   };
 
   const businessTypes = [
-    { value: "manufacturing", label: t.manufacturing },
-    { value: "service", label: t.service },
-    { value: "retail", label: t.retail },
-    { value: "it", label: t.it },
-    { value: "other", label: t.other },
+    "Manufacturing", "Trading", "Service", "Retail", "Technology", "Healthcare", "Education", "Food & Beverage"
   ];
 
-  if (isLoading) {
-    return (
-      <div className="p-6 max-w-7xl mx-auto">
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-gray-200 rounded w-1/3" />
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-6">
-              <div className="h-96 bg-gray-200 rounded" />
-            </div>
-            <div className="space-y-6">
-              <div className="h-48 bg-gray-200 rounded" />
-              <div className="h-48 bg-gray-200 rounded" />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const employeeRanges = [
+    "1-10", "11-50", "51-100", "101-500", "500+"
+  ];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8">
+    <div className="p-3 sm:p-6 lg:p-8 xl:p-12 max-w-7xl mx-auto space-y-4 sm:space-y-6 lg:space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.profileTitle}</h1>
-        <p className="text-gray-600">{t.profileSubtitle}</p>
+      <div className="text-center sm:text-left lg:mb-8">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 lg:mb-4">
+          {t.businessProfile}
+        </h1>
+        <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-3xl lg:max-w-4xl">
+          Manage your business information and profile details. This information is used for license applications and compliance tracking.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Profile Form */}
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t.businessDetails}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="businessName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t.businessNameLabel}</FormLabel>
-                          <FormControl>
-                            <Input placeholder="e.g., Delhi Innovations Pvt. Ltd." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="businessType"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t.businessTypeLabel}</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder={t.selectType} />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {businessTypes.map((type) => (
-                                <SelectItem key={type.value} value={type.value}>
-                                  {type.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="gstin"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t.gstinLabel}</FormLabel>
-                          <FormControl>
-                            <Input placeholder="07AABCU9603R1ZX" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="udyamNumber"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t.udyamLabel}</FormLabel>
-                          <FormControl>
-                            <Input placeholder="UDYAM-DL-06-0123456" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  
-                  <FormField
-                    control={form.control}
-                    name="businessAddress"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t.businessAddressLabel}</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Complete business address in Delhi" 
-                            rows={3} 
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="contactEmail"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t.emailLabel}</FormLabel>
-                          <FormControl>
-                            <Input type="email" placeholder="business@example.com" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="contactPhone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t.phoneLabel}</FormLabel>
-                          <FormControl>
-                            <Input placeholder="+91 98765 43210" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  
-                  <div className="flex justify-end space-x-4">
-                    <Button type="button" variant="outline">
-                      {t.cancelBtn}
-                    </Button>
-                    <Button 
-                      type="submit" 
-                      disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
-                    >
-                      {(createProfileMutation.isPending || updateProfileMutation.isPending) && (
-                        <div className="loading-spinner mr-2" />
-                      )}
-                      {t.saveProfileBtn}
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
-        </div>
-        
-        {/* Profile Summary */}
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Profile Summary</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6 lg:space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+
+          {/* Basic Information Card */}
+          <Card className="card-hover lg:col-span-2 xl:col-span-2">
+            <CardHeader className="p-4 sm:p-6 lg:p-8">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Profile Complete</span>
-                <span className="text-sm font-semibold text-green-600">{getProfileCompletion()}%</span>
-              </div>
-              <Progress value={getProfileCompletion()} className="w-full" />
-              {getProfileCompletion() < 100 && (
-                <div className="text-xs text-gray-500">
-                  Complete your profile to access all features
+                <div>
+                  <CardTitle className="text-lg sm:text-xl lg:text-2xl flex items-center gap-2 lg:gap-3">
+                    <Building2 className="h-5 w-5 lg:h-6 lg:w-6 text-blue-600" />
+                    Basic Information
+                  </CardTitle>
+                  <CardDescription className="text-sm lg:text-base mt-1 lg:mt-2">
+                    Company details and contact information
+                  </CardDescription>
                 </div>
-              )}
+                <Button
+                  type="button"
+                  variant={isEditing ? "destructive" : "outline"}
+                  size="sm"
+                  onClick={() => setIsEditing(!isEditing)}
+                  className="lg:px-6 lg:py-3 lg:text-base"
+                >
+                  {isEditing ? (
+                    <>
+                      <X className="h-4 w-4 lg:h-5 lg:w-5 mr-1 lg:mr-2" />
+                      Cancel
+                    </>
+                  ) : (
+                    <>
+                      <Edit className="h-4 w-4 lg:h-5 lg:w-5 mr-1 lg:mr-2" />
+                      Edit
+                    </>
+                  )}
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-6 lg:p-8 pt-0 lg:pt-0 space-y-4 lg:space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                <div>
+                  <Label htmlFor="companyName" className="lg:text-base font-medium">Company Name</Label>
+                  <Input
+                    id="companyName"
+                    {...register("companyName")}
+                    disabled={!isEditing}
+                    className="mt-1 lg:mt-2 lg:h-12 lg:text-base"
+                  />
+                  {errors.companyName && (
+                    <p className="text-red-500 text-xs lg:text-sm mt-1">
+                      {errors.companyName.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="businessType" className="lg:text-base font-medium">Business Type</Label>
+                  <Select disabled={!isEditing} defaultValue={watch("businessType")}>
+                    <SelectTrigger className="mt-1 lg:mt-2 lg:h-12 lg:text-base">
+                      <SelectValue placeholder="Select business type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {businessTypes.map((type) => (
+                        <SelectItem key={type} value={type} className="lg:text-base">
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="address" className="lg:text-base font-medium">Address</Label>
+                <Textarea
+                  id="address"
+                  {...register("address")}
+                  disabled={!isEditing}
+                  className="mt-1 lg:mt-2 lg:min-h-24 lg:text-base"
+                  rows={3}
+                />
+                {errors.address && (
+                  <p className="text-red-500 text-xs lg:text-sm mt-1">
+                    {errors.address.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6">
+                <div>
+                  <Label htmlFor="city" className="lg:text-base font-medium">City</Label>
+                  <Input
+                    id="city"
+                    {...register("city")}
+                    disabled={!isEditing}
+                    className="mt-1 lg:mt-2 lg:h-12 lg:text-base"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="state" className="lg:text-base font-medium">State</Label>
+                  <Input
+                    id="state"
+                    {...register("state")}
+                    disabled={!isEditing}
+                    className="mt-1 lg:mt-2 lg:h-12 lg:text-base"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="pincode" className="lg:text-base font-medium">Pincode</Label>
+                  <Input
+                    id="pincode"
+                    {...register("pincode")}
+                    disabled={!isEditing}
+                    className="mt-1 lg:mt-2 lg:h-12 lg:text-base"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                <div>
+                  <Label htmlFor="phone" className="lg:text-base font-medium">Phone</Label>
+                  <Input
+                    id="phone"
+                    {...register("phone")}
+                    disabled={!isEditing}
+                    className="mt-1 lg:mt-2 lg:h-12 lg:text-base"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="email" className="lg:text-base font-medium">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    {...register("email")}
+                    disabled={!isEditing}
+                    className="mt-1 lg:mt-2 lg:h-12 lg:text-base"
+                  />
+                </div>
+              </div>
             </CardContent>
           </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>Active Registrations</CardTitle>
+
+          {/* Business Details Card */}
+          <Card className="card-hover lg:col-span-2 xl:col-span-1">
+            <CardHeader className="p-4 sm:p-6 lg:p-8">
+              <CardTitle className="text-lg sm:text-xl lg:text-2xl flex items-center gap-2 lg:gap-3">
+                <Users className="h-5 w-5 lg:h-6 lg:w-6 text-blue-600" />
+                Business Details
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">GST Registration</span>
-                <Badge className="status-approved">{t.active}</Badge>
+            <CardContent className="p-4 sm:p-6 lg:p-8 pt-0 lg:pt-0 space-y-4 lg:space-y-6">
+              <div>
+                <Label htmlFor="website" className="lg:text-base font-medium">Website</Label>
+                <Input
+                  id="website"
+                  {...register("website")}
+                  disabled={!isEditing}
+                  className="mt-1 lg:mt-2 lg:h-12 lg:text-base"
+                  placeholder="www.example.com"
+                />
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Shop & Establishment</span>
-                <Badge className="status-approved">{t.active}</Badge>
+              <div>
+                <Label htmlFor="employees" className="lg:text-base font-medium">Number of Employees</Label>
+                <Select disabled={!isEditing} defaultValue={watch("employees")}>
+                  <SelectTrigger className="mt-1 lg:mt-2 lg:h-12 lg:text-base">
+                    <SelectValue placeholder="Select range" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {employeeRanges.map((range) => (
+                      <SelectItem key={range} value={range} className="lg:text-base">
+                        {range}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">MSME Registration</span>
-                <Badge className="status-pending">{t.pending}</Badge>
+              <div>
+                <Label htmlFor="establishedYear" className="lg:text-base font-medium">Established Year</Label>
+                <Input
+                  id="establishedYear"
+                  {...register("establishedYear")}
+                  disabled={!isEditing}
+                  className="mt-1 lg:mt-2 lg:h-12 lg:text-base"
+                  placeholder="2020"
+                />
+              </div>
+              <div>
+                <Label htmlFor="description" className="lg:text-base font-medium">Description</Label>
+                <Textarea
+                  id="description"
+                  {...register("description")}
+                  disabled={!isEditing}
+                  className="mt-1 lg:mt-2 lg:min-h-32 lg:text-base"
+                  rows={4}
+                  placeholder="Brief description of your business..."
+                />
               </div>
             </CardContent>
           </Card>
         </div>
-      </div>
+
+        {/* Action Buttons */}
+        {isEditing && (
+          <div className="flex justify-end gap-3 lg:gap-4 pt-4 lg:pt-6">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsEditing(false)}
+              className="lg:px-8 lg:py-3 lg:text-base"
+            >
+              Cancel
+            </Button>
+            <Button type="submit" className="lg:px-8 lg:py-3 lg:text-base">
+              <Save className="h-4 w-4 lg:h-5 lg:w-5 mr-1 lg:mr-2" />
+              Save Changes
+            </Button>
+          </div>
+        )}
+      </form>
     </div>
   );
 }

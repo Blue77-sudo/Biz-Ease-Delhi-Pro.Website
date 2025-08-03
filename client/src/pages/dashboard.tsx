@@ -142,16 +142,39 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.dashboardTitle}</h1>
-        <p className="text-gray-600">{t.dashboardSubtitle}</p>
+    <div className="p-3 sm:p-6 lg:p-8 xl:p-12 max-w-7xl mx-auto space-y-4 sm:space-y-6 lg:space-y-8 xl:space-y-10">
+      {/* Welcome Header */}
+      <div className="text-center sm:text-left lg:mb-8 xl:mb-12">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-2 lg:mb-4">
+          Welcome back, {user?.name || 'Business Owner'}!
+        </h1>
+        <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-gray-600 max-w-3xl">
+          Here's what's happening with your business today.
+        </p>
       </div>
 
-      {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {metrics.map((metric, index) => {
+      {/* Metrics Overview */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
+        <Card className="metric-card metric-primary card-hover transition-all duration-300">
+          <CardContent className="p-3 sm:p-6 lg:p-8">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <FileText className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 text-blue-600" />
+              </div>
+              <div className="ml-3 sm:ml-5 lg:ml-6 w-0 flex-1">
+                <dl>
+                  <dt className="text-xs sm:text-sm lg:text-base xl:text-lg font-medium text-gray-500 truncate">
+                    {t.activeApplications || 'Active Applications'}
+                  </dt>
+                  <dd className="text-lg sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900">
+                    {applications.length}
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      {metrics.map((metric, index) => {
           const Icon = metric.icon;
           return (
             <Card key={index} className={`${metric.color} card-hover`}>
