@@ -26,7 +26,7 @@ export default function Dashboard() {
   const { user, language } = useAuthStore();
   const t = translations[language];
 
-  const { data: applications } = useQuery({
+  const { data: applications = [] } = useQuery({
     queryKey: ["/api/applications", user?.id],
     enabled: !!user?.id,
   });
@@ -155,26 +155,7 @@ export default function Dashboard() {
 
       {/* Metrics Overview */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
-        <Card className="metric-card metric-primary card-hover transition-all duration-300">
-          <CardContent className="p-3 sm:p-6 lg:p-8">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <FileText className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 text-blue-600" />
-              </div>
-              <div className="ml-3 sm:ml-5 lg:ml-6 w-0 flex-1">
-                <dl>
-                  <dt className="text-xs sm:text-sm lg:text-base xl:text-lg font-medium text-gray-500 truncate">
-                    {t.activeApplications || 'Active Applications'}
-                  </dt>
-                  <dd className="text-lg sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900">
-                    {applications.length}
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      {metrics.map((metric, index) => {
+        {metrics.map((metric, index) => {
           const Icon = metric.icon;
           return (
             <Card key={index} className={`${metric.color} card-hover`}>
