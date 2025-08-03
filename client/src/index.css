@@ -79,6 +79,13 @@
     background: linear-gradient(135deg, var(--gov-blue-500) 0%, var(--gov-blue-700) 100%);
   }
   
+  /* Desktop header enhancements */
+  @media (min-width: 1024px) {
+    .nav-gradient {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+  }
+  
   .card-hover {
     transition: all 0.3s ease;
   }
@@ -225,5 +232,44 @@
   
   .mobile-only {
     display: none !important;
+  }
+}
+
+/* Desktop navigation improvements */
+@media (min-width: 1024px) {
+  .nav-gradient header {
+    backdrop-filter: blur(8px);
+  }
+  
+  .nav-gradient .max-w-7xl {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  
+  /* Enhanced button hover effects for desktop */
+  .nav-gradient button:hover {
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+  }
+  
+  /* Better spacing for desktop navigation */
+  .nav-gradient nav {
+    flex: 1;
+    max-width: 800px;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 1280px) {
+  .nav-gradient .max-w-7xl {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  .nav-gradient .max-w-7xl {
+    padding-left: 4rem;
+    padding-right: 4rem;
   }
 }
