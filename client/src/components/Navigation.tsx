@@ -75,8 +75,8 @@ export function Navigation() {
 
   return (
     <header className="nav-gradient shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
-        <div className="flex items-center justify-between h-14 sm:h-16 lg:h-24 xl:h-28">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="flex items-center justify-between h-16 lg:h-24 xl:h-28">
           
           {/* Logo and Title */}
           <div className="flex items-center space-x-4 lg:space-x-6 xl:space-x-8 min-w-0 flex-shrink-0">
@@ -111,12 +111,12 @@ export function Navigation() {
               </SheetContent>
             </Sheet>
             
-            <Link href="/dashboard" className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4 xl:space-x-5 hover:opacity-90 transition-opacity">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14 xl:w-16 xl:h-16 bg-white rounded-lg lg:rounded-xl shadow-md flex items-center justify-center">
-                <Building2 className="h-5 w-5 sm:h-6 sm:w-6 lg:h-8 lg:w-8 xl:h-9 xl:w-9 text-blue-600" />
+            <Link href="/dashboard" className="flex items-center space-x-3 lg:space-x-4 xl:space-x-5 hover:opacity-90 transition-opacity">
+              <div className="w-10 h-10 lg:w-14 lg:h-14 xl:w-16 xl:h-16 bg-white rounded-xl shadow-md flex items-center justify-center">
+                <Building2 className="h-6 w-6 lg:h-8 lg:w-8 xl:h-9 xl:w-9 text-blue-600" />
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-white font-bold text-sm sm:text-lg lg:text-2xl xl:text-3xl leading-tight">
+                <h1 className="text-white font-bold text-lg lg:text-2xl xl:text-3xl leading-tight">
                   {t.portalTitle}
                 </h1>
                 <p className="text-blue-100 text-xs lg:text-sm xl:text-base leading-tight">
@@ -134,14 +134,14 @@ export function Navigation() {
           </nav>
 
           {/* User Actions */}
-          <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4 xl:space-x-6 flex-shrink-0">
+          <div className="flex items-center space-x-3 lg:space-x-4 xl:space-x-6 flex-shrink-0">
             <Button 
               variant="ghost" 
               size="icon" 
-              className="text-white hover:bg-white/10 relative h-9 w-9 sm:h-10 sm:w-10 lg:h-12 lg:w-12 xl:h-14 xl:w-14 hover:scale-105 transition-all"
+              className="text-white hover:bg-white/10 relative lg:h-12 lg:w-12 xl:h-14 xl:w-14 hover:scale-105 transition-all"
             >
-              <Bell className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 xl:h-7 xl:w-7" />
-              <Badge className="absolute -top-1 -right-1 h-2 w-2 sm:h-3 sm:w-3 p-0 bg-orange-500 animate-pulse" />
+              <Bell className="h-5 w-5 lg:h-6 lg:w-6 xl:h-7 xl:w-7" />
+              <Badge className="absolute -top-1 -right-1 h-3 w-3 p-0 bg-orange-500 animate-pulse" />
             </Button>
             <div className="hidden md:block">
               <LanguageToggle />
