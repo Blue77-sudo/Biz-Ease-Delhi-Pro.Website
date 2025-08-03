@@ -142,7 +142,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8 desktop-container desktop-spacing lg:space-y-12">
+    <div className="p-6 max-w-7xl mx-auto space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.dashboardTitle}</h1>
@@ -150,7 +150,7 @@ export default function Dashboard() {
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 desktop-grid-spacing desktop-grid-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {metrics.map((metric, index) => {
           const Icon = metric.icon;
           return (
@@ -173,7 +173,7 @@ export default function Dashboard() {
       </div>
 
       {/* Recent Activity & Alerts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 desktop-grid-spacing">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Recent Activity */}
         <Card>
           <CardHeader>
@@ -230,7 +230,7 @@ export default function Dashboard() {
           <CardTitle>{t.quickActions}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 desktop-grid-spacing lg:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {quickActions.map((action, index) => {
               const Icon = action.icon;
               return (

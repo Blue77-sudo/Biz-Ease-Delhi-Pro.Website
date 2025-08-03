@@ -190,7 +190,7 @@ export default function ApplicationsPage() {
   }
 
   return (
-    <div className="p-3 sm:p-6 max-w-7xl mx-auto space-y-4 sm:space-y-8 desktop-container desktop-spacing lg:space-y-12">
+    <div className="p-6 max-w-7xl mx-auto space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.applicationsTitle}</h1>
@@ -337,7 +337,7 @@ export default function ApplicationsPage() {
               Please fill out the application form below. Processing time: {selectedLicense?.processingTime}
             </DialogDescription>
           </DialogHeader>
-
+          
           <div className="space-y-4">
             <div>
               <Label>Applicant Name</Label>
@@ -347,7 +347,7 @@ export default function ApplicationsPage() {
                 className="bg-gray-50"
               />
             </div>
-
+            
             <div>
               <Label>Business Address</Label>
               <Textarea 
@@ -357,7 +357,7 @@ export default function ApplicationsPage() {
                 rows={2}
               />
             </div>
-
+            
             <div>
               <Label>Brief Business Activity</Label>
               <Textarea 
@@ -367,7 +367,7 @@ export default function ApplicationsPage() {
                 rows={3}
               />
             </div>
-
+            
             <div>
               <Label>Upload Required Documents</Label>
               <Input 
@@ -385,7 +385,7 @@ export default function ApplicationsPage() {
               </p>
             </div>
           </div>
-
+          
           <DialogFooter className="flex space-x-2">
             <Button variant="outline" onClick={() => setIsApplicationDialogOpen(false)}>
               Cancel
