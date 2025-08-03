@@ -203,6 +203,162 @@
   }
 }
 
+/* Desktop-specific styles for enhanced presentation */
+@media (min-width: 1024px) {
+  body {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  
+  .container-desktop {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  
+  .page-header-desktop {
+    padding: 3rem 0 2rem 0;
+  }
+  
+  .page-title-desktop {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+  
+  .page-subtitle-desktop {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  
+  .card-grid-desktop {
+    gap: 2rem;
+  }
+  
+  .card-desktop {
+    padding: 2rem;
+    border-radius: 16px;
+  }
+  
+  .card-desktop .card-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .card-desktop .card-content {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .button-desktop {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    min-height: 44px;
+  }
+  
+  .metric-card-desktop {
+    padding: 2.5rem;
+    border-radius: 16px;
+  }
+  
+  .metric-card-desktop .metric-value {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  
+  .metric-card-desktop .metric-label {
+    font-size: 1.125rem;
+    font-weight: 500;
+  }
+  
+  .form-desktop .form-group {
+    margin-bottom: 2rem;
+  }
+  
+  .form-desktop label {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+  
+  .form-desktop input,
+  .form-desktop textarea,
+  .form-desktop select {
+    font-size: 1rem;
+    padding: 0.875rem 1rem;
+    min-height: 44px;
+  }
+  
+  .section-spacing-desktop {
+    margin-bottom: 4rem;
+  }
+  
+  .grid-desktop-2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+  
+  .grid-desktop-3 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  
+  .grid-desktop-4 {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+  
+  .nav-desktop {
+    padding: 0 2rem;
+  }
+  
+  .nav-desktop .nav-items {
+    gap: 0.5rem;
+  }
+  
+  .nav-desktop .nav-item {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container-desktop {
+    max-width: 1280px;
+    padding: 0 3rem;
+  }
+  
+  .page-title-desktop {
+    font-size: 3rem;
+  }
+  
+  .card-grid-desktop {
+    gap: 2.5rem;
+  }
+  
+  .card-desktop {
+    padding: 2.5rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  .container-desktop {
+    max-width: 1400px;
+    padding: 0 4rem;
+  }
+  
+  .page-header-desktop {
+    padding: 4rem 0 3rem 0;
+  }
+  
+  .card-grid-desktop {
+    gap: 3rem;
+  }
+}
+
 @media (max-width: 768px) {
   .floating-action-btn {
     bottom: 5rem;

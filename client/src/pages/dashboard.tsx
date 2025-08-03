@@ -142,30 +142,28 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gray-50 p-4 lg:p-6">
+      <div className="max-w-7xl mx-auto container-desktop space-y-6 lg:space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.dashboardTitle}</h1>
-        <p className="text-gray-600">{t.dashboardSubtitle}</p>
-      </div>
+        <div className="mb-8 page-header-desktop">
+          <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-2 page-title-desktop">
+            {t.dashboardTitle}
+          </h1>
+          <p className="text-gray-600 lg:text-lg page-subtitle-desktop">
+            {t.dashboardSubtitle}
+          </p>
+        </div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-6 mb-8 section-spacing-desktop">
         {metrics.map((metric, index) => {
           const Icon = metric.icon;
           return (
-            <Card key={index} className={`${metric.color} card-hover`}>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-600 text-sm font-medium">{metric.title}</p>
-                    <p className="text-3xl font-bold text-blue-600">{metric.value}</p>
-                    <p className="text-xs text-gray-500 mt-1">{metric.description}</p>
-                  </div>
-                  <div className={`w-12 h-12 ${metric.bgColor} rounded-lg flex items-center justify-center`}>
-                    <Icon className={`h-6 w-6 ${metric.iconColor}`} />
-                  </div>
-                </div>
+            <Card key={index} className={`metric-card metric-card-desktop ${metric.color} card-hover transition-all duration-300`}>
+              <CardContent className="p-6 lg:p-8">
+                <div className="text-2xl lg:text-3xl xl:text-4xl font-bold mb-2 metric-value">{metric.value}</div>
+                <div className="text-sm lg:text-base text-gray-600 metric-label">{metric.title}</div>
+                <p className="text-xs text-gray-500 mt-1">{metric.description}</p>
               </CardContent>
             </Card>
           );
@@ -175,14 +173,14 @@ export default function Dashboard() {
       {/* Recent Activity & Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Recent Activity */}
-        <Card>
+        <Card className="card-hover card-desktop transition-all duration-300">
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Calendar className="h-5 w-5" />
+            <CardTitle className="flex items-center space-x-2 lg:space-x-3">
+              <Calendar className="h-5 w-5 lg:h-6 lg:w-6" />
               <span>{t.recentActivity}</span>
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 card-content">
             {recentActivities.map((activity, index) => {
               const Icon = activity.icon;
               return (
@@ -201,14 +199,14 @@ export default function Dashboard() {
         </Card>
 
         {/* Urgent Alerts */}
-        <Card>
+        <Card className="card-hover card-desktop transition-all duration-300">
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Bell className="h-5 w-5" />
+            <CardTitle className="flex items-center space-x-2 lg:space-x-3">
+              <Bell className="h-5 w-5 lg:h-6 lg:w-6" />
               <span>{t.urgentAlerts}</span>
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 card-content">
             {urgentAlerts.map((alert, index) => (
               <div key={index} className={`${alert.bgColor} border ${alert.borderColor} rounded-lg p-4`}>
                 <div className="flex items-start space-x-3">
@@ -225,11 +223,11 @@ export default function Dashboard() {
       </div>
 
       {/* Quick Actions */}
-      <Card>
+      <Card className="card-hover card-desktop transition-all duration-300">
         <CardHeader>
           <CardTitle>{t.quickActions}</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="card-content">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {quickActions.map((action, index) => {
               const Icon = action.icon;
