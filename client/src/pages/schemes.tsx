@@ -112,7 +112,7 @@ export default function SchemesPage() {
   ];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8">
+    <div className="p-3 sm:p-6 max-w-7xl mx-auto space-y-4 sm:space-y-8 desktop-container desktop-spacing lg:space-y-12">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.schemesTitle}</h1>
@@ -197,7 +197,7 @@ export default function SchemesPage() {
                     <p className="text-sm text-gray-600 mb-4">{scheme.description}</p>
                     <div className="flex items-center justify-between">
                       <div className="text-sm">
-                        <span className="font-medium text-gray-900">Funding: </span>
+                        <span className="font-medium text-gray-900">Funding: </span> 
                         <span className="text-green-600">{scheme.funding}</span>
                       </div>
                       <Button

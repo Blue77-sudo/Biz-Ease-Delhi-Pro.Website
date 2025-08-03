@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { useForm } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -105,7 +105,7 @@ export default function ProfilePage() {
 
   const getProfileCompletion = () => {
     if (!businessProfile) return 0;
-    
+
     const fields = [
       businessProfile.businessName,
       businessProfile.businessType,
@@ -115,7 +115,7 @@ export default function ProfilePage() {
       businessProfile.gstin,
       businessProfile.udyamNumber,
     ];
-    
+
     const filledFields = fields.filter(field => field && field.trim() !== '').length;
     return Math.round((filledFields / fields.length) * 100);
   };
@@ -148,7 +148,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8">
+    <div className="p-6 max-w-7xl mx-auto space-y-8 desktop-container desktop-spacing lg:space-y-12">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.profileTitle}</h1>
@@ -179,7 +179,7 @@ export default function ProfilePage() {
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="businessType"
@@ -205,7 +205,7 @@ export default function ProfilePage() {
                       )}
                     />
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
@@ -220,7 +220,7 @@ export default function ProfilePage() {
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="udyamNumber"
@@ -235,7 +235,7 @@ export default function ProfilePage() {
                       )}
                     />
                   </div>
-                  
+
                   <FormField
                     control={form.control}
                     name="businessAddress"
@@ -253,7 +253,7 @@ export default function ProfilePage() {
                       </FormItem>
                     )}
                   />
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
@@ -268,7 +268,7 @@ export default function ProfilePage() {
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="contactPhone"
@@ -283,7 +283,7 @@ export default function ProfilePage() {
                       )}
                     />
                   </div>
-                  
+
                   <div className="flex justify-end space-x-4">
                     <Button type="button" variant="outline">
                       {t.cancelBtn}
@@ -303,7 +303,7 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
         </div>
-        
+
         {/* Profile Summary */}
         <div className="space-y-6">
           <Card>
@@ -323,7 +323,7 @@ export default function ProfilePage() {
               )}
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>Active Registrations</CardTitle>

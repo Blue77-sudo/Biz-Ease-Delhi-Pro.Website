@@ -182,7 +182,7 @@ export default function ExpertPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8">
+    <div className="p-3 sm:p-6 max-w-7xl mx-auto space-y-4 sm:space-y-8 desktop-container desktop-spacing lg:space-y-12">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Ask an Expert</h1>
@@ -352,7 +352,7 @@ export default function ExpertPage() {
               You're connected with a business expert. Ask your questions below.
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 rounded-lg">
             {chatMessages.map((message) => (
               <div
@@ -369,7 +369,7 @@ export default function ExpertPage() {
               </div>
             ))}
           </div>
-          
+
           <div className="flex space-x-2">
             <Input
               value={chatInput}
@@ -391,7 +391,7 @@ export default function ExpertPage() {
               Schedule a personalized consultation with our experts
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -412,7 +412,7 @@ export default function ExpertPage() {
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div>
                 <Label>Consultation Type</Label>
                 <Select 
@@ -432,7 +432,7 @@ export default function ExpertPage() {
                 </Select>
               </div>
             </div>
-            
+
             <div>
               <Label>Subject</Label>
               <Input
@@ -441,7 +441,7 @@ export default function ExpertPage() {
                 placeholder="Brief subject of consultation"
               />
             </div>
-            
+
             <div>
               <Label>Description</Label>
               <Textarea
@@ -451,7 +451,7 @@ export default function ExpertPage() {
                 rows={3}
               />
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Preferred Time</Label>
@@ -461,7 +461,7 @@ export default function ExpertPage() {
                   onChange={(e) => setConsultationForm(prev => ({ ...prev, preferredTime: e.target.value }))}
                 />
               </div>
-              
+
               <div>
                 <Label>Urgency</Label>
                 <Select 
@@ -481,7 +481,7 @@ export default function ExpertPage() {
               </div>
             </div>
           </div>
-          
+
           <div className="flex justify-end space-x-2 mt-6">
             <Button variant="outline" onClick={() => setIsConsultationOpen(false)}>
               Cancel
