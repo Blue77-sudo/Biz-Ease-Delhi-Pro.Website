@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { 
   Upload,
   File,
@@ -18,12 +19,15 @@ import {
   FolderOpen,
   Link,
   Shield,
-  Download
+  Download,
+  CreditCard,
+  IndianRupee
 } from "lucide-react";
 import { useAuthStore } from "@/lib/auth";
 import { translations } from "@/lib/translations";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function DocumentsPage() {
   const { user, language } = useAuthStore();
@@ -302,24 +306,25 @@ export default function DocumentsPage() {
   ];
 
   const displayDocuments = documents || sampleDocuments;
+  const isMobile = useIsMobile();
 
   if (isLoading) {
     return (
-      <div className="p-6 max-w-7xl mx-auto">
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-gray-200 rounded w-1/3" />
-          <div className="h-96 bg-gray-200 rounded" />
+      <div className="p-3 sm:p-6 max-w-7xl mx-auto">
+        <div className="animate-pulse space-y-4 sm:space-y-6">
+          <div className="h-6 sm:h-8 bg-gray-200 rounded w-2/3 sm:w-1/3" />
+          <div className="h-64 sm:h-96 bg-gray-200 rounded" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8">
+    <div className="p-3 sm:p-6 max-w-7xl mx-auto space-y-4 sm:space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Digital Document Vault</h1>
-        <p className="text-gray-600">Securely store and manage all your business documents. Documents can be auto-filled into application forms.</p>
+      <div className="text-center sm:text-left">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Digital Document Vault</h1>
+        <p className="text-sm sm:text-base text-gray-600">Securely store and manage all your business documents. Documents can be auto-filled into application forms.</p>
       </div>
 
       {/* Upload Section */}
@@ -333,10 +338,10 @@ export default function DocumentsPage() {
             Upload your business documents for secure storage and easy access during applications.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <CardContent className="space-y-4 sm:space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <div>
-              <Label htmlFor="file-upload">Select Documents</Label>
+              <Label htmlFor="file-upload" className="text-sm sm:text-base">Select Documents</Label>
               <Input
                 id="file-upload"
                 ref={fileInputRef}
@@ -344,7 +349,7 @@ export default function DocumentsPage() {
                 multiple
                 accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                 onChange={handleFileSelect}
-                className="bg-white mt-2"
+                className="bg-white mt-2 text-sm"
               />
               <p className="text-xs text-gray-500 mt-1">
                 Supported formats: PDF, DOC, DOCX, JPG, PNG (Max 10MB per file)
@@ -352,7 +357,7 @@ export default function DocumentsPage() {
             </div>
 
             <div>
-              <Label>Document Category</Label>
+              <Label className="text-sm sm:text-base">Document Category</Label>
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger className="mt-2">
                   <SelectValue placeholder="Select category" />
@@ -370,13 +375,13 @@ export default function DocumentsPage() {
 
           {selectedFiles.length > 0 && (
             <div className="space-y-2">
-              <Label>Selected Files:</Label>
-              <div className="space-y-1">
+              <Label className="text-sm sm:text-base">Selected Files:</Label>
+              <div className="space-y-2">
                 {selectedFiles.map((file, index) => (
-                  <div key={index} className="flex items-center space-x-2 text-sm text-gray-600">
-                    <File className="h-4 w-4" />
-                    <span>{file.name}</span>
-                    <span className="text-gray-400">({formatFileSize(file.size)})</span>
+                  <div key={index} className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600 p-2 bg-gray-50 rounded-lg">
+                    <File className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                    <span className="truncate flex-1">{file.name}</span>
+                    <span className="text-gray-400 text-xs">({formatFileSize(file.size)})</span>
                   </div>
                 ))}
               </div>
@@ -386,7 +391,8 @@ export default function DocumentsPage() {
           <Button
             onClick={handleUpload}
             disabled={selectedFiles.length === 0 || !selectedCategory || uploadDocumentMutation.isPending}
-            className="bg-blue-600 hover:bg-blue-700"
+            className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
+            size={isMobile ? "lg" : "default"}
           >
             {uploadDocumentMutation.isPending && (
               <div className="loading-spinner mr-2" />
@@ -410,16 +416,17 @@ export default function DocumentsPage() {
         </CardHeader>
         <CardContent className="space-y-6">
           {!isDigiLockerConnected ? (
-            <div className="text-center py-8 border-2 border-dashed border-gray-200 rounded-lg">
-              <Shield className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Connect to DigiLocker</h3>
-              <p className="text-gray-600 mb-6 max-w-md mx-auto">
+            <div className="text-center py-6 sm:py-8 border-2 border-dashed border-gray-200 rounded-lg">
+              <Shield className="h-12 w-12 sm:h-16 sm:w-16 text-blue-600 mx-auto mb-4" />
+              <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Connect to DigiLocker</h3>
+              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 max-w-md mx-auto px-4">
                 Access your Aadhaar, PAN, Driving License, and other government documents directly from DigiLocker.
               </p>
               <Button 
                 onClick={handleConnectDigiLocker}
                 disabled={connectDigiLockerMutation.isPending}
-                className="bg-blue-600 hover:bg-blue-700"
+                className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
+                size={isMobile ? "lg" : "default"}
               >
                 {connectDigiLockerMutation.isPending && (
                   <div className="loading-spinner mr-2" />
@@ -427,7 +434,7 @@ export default function DocumentsPage() {
                 <Link className="h-4 w-4 mr-2" />
                 Connect DigiLocker
               </Button>
-              <div className="mt-4 text-xs text-gray-500">
+              <div className="mt-4 text-xs text-gray-500 space-y-1">
                 <p>✓ Secure OAuth 2.0 authentication</p>
                 <p>✓ Government-verified documents</p>
                 <p>✓ No document upload required</p>
@@ -454,22 +461,22 @@ export default function DocumentsPage() {
 
               {showDigiLockerDocs && (
                 <div className="space-y-3">
-                  <h4 className="font-medium text-gray-900">Available Documents</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <h4 className="font-medium text-gray-900 text-sm sm:text-base">Available Documents</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {digiLockerDocuments.map((doc) => (
-                      <div key={doc.id} className="border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-2 mb-2">
-                              <FileText className="h-4 w-4 text-blue-600" />
-                              <span className="font-medium text-gray-900">{doc.name}</span>
+                      <div key={doc.id} className="border border-gray-200 rounded-lg p-3 sm:p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center space-x-2 mb-2 flex-wrap">
+                              <FileText className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                              <span className="font-medium text-gray-900 text-sm truncate">{doc.name}</span>
                               {doc.isAvailable && (
-                                <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                                <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200 flex-shrink-0">
                                   Available
                                 </Badge>
                               )}
                             </div>
-                            <p className="text-xs text-gray-600">Issued by: {doc.issuer}</p>
+                            <p className="text-xs text-gray-600 truncate">Issued by: {doc.issuer}</p>
                             <p className="text-xs text-gray-600">Valid until: {doc.validUntil}</p>
                           </div>
                           <Button
@@ -477,14 +484,14 @@ export default function DocumentsPage() {
                             variant="outline"
                             disabled={!doc.isAvailable || importDigiLockerDocMutation.isPending}
                             onClick={() => handleImportFromDigiLocker(doc.type, doc.id)}
-                            className="ml-2"
+                            className="flex-shrink-0"
                           >
                             {importDigiLockerDocMutation.isPending ? (
                               <div className="loading-spinner mr-1" />
                             ) : (
                               <Download className="h-3 w-3 mr-1" />
                             )}
-                            Import
+                            {isMobile ? "" : "Import"}
                           </Button>
                         </div>
                       </div>
@@ -510,52 +517,84 @@ export default function DocumentsPage() {
         </CardHeader>
         <CardContent>
           {Array.isArray(displayDocuments) && displayDocuments.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {displayDocuments.map((document: any) => (
                 <Card key={document.id} className="border border-gray-200">
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        {getFileIcon(document.fileType)}
+                  <CardContent className="p-3 sm:p-4">
+                    <div className="flex items-start justify-between mb-3 gap-2">
+                      <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
+                        <div className="flex-shrink-0">
+                          {getFileIcon(document.fileType)}
+                        </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-gray-900 truncate">
+                          <p className="font-medium text-gray-900 truncate text-sm sm:text-base">
                             {document.fileName}
                           </p>
-                          <p className="text-sm text-gray-500">
-                            Uploaded: {new Date(document.uploadDate).toLocaleDateString()}
+                          <p className="text-xs sm:text-sm text-gray-500">
+                            Uploaded: {new Date(document.uploadedAt || document.uploadDate).toLocaleDateString()}
                           </p>
                           <p className="text-xs text-gray-400">
                             {formatFileSize(document.fileSize)}
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-1">
+                      <div className="flex items-center space-x-1 flex-shrink-0">
                         {document.isVerified ? (
-                          <CheckCircle className="h-5 w-5 text-green-500" title="Verified" />
+                          <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" title="Verified" />
                         ) : (
-                          <AlertTriangle className="h-5 w-5 text-yellow-500" title="Pending Verification" />
+                          <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500" title="Pending Verification" />
                         )}
                       </div>
                     </div>
 
-                    <div className="mb-3">
+                    <div className="mb-3 flex flex-wrap gap-2">
                       <Badge variant="outline" className="text-xs">
                         {documentCategories.find(cat => cat.value === document.category)?.label || document.category}
                       </Badge>
+                      {document.approvalStatus === "approved_pending_payment" && (
+                        <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200">
+                          Payment Pending
+                        </Badge>
+                      )}
+                      {document.approvalStatus === "approved" && (
+                        <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                          Approved
+                        </Badge>
+                      )}
                     </div>
 
-                    <div className="flex space-x-2">
-                      <Button size="sm" variant="outline" className="flex-1">
-                        <Eye className="h-4 w-4 mr-1" />
+                    {document.approvalStatus === "approved_pending_payment" && (
+                      <div className="mb-3 p-2 bg-orange-50 border border-orange-200 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-xs font-medium text-orange-900">Processing Fee</p>
+                            <p className="text-sm font-bold text-orange-700">₹{document.processingFee}</p>
+                          </div>
+                          <Button
+                            size="sm"
+                            onClick={() => handlePayment(document)}
+                            className="bg-orange-600 hover:bg-orange-700 text-white text-xs px-2 py-1"
+                          >
+                            <CreditCard className="h-3 w-3 mr-1" />
+                            Pay Now
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                      <Button size="sm" variant="outline" className="flex-1 text-xs sm:text-sm">
+                        <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                         View
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => handleDelete(document.id)}
-                        className="text-red-600 hover:text-red-700"
+                        className="text-red-600 hover:text-red-700 text-xs sm:text-sm"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                        {!isMobile && <span className="ml-1">Delete</span>}
                       </Button>
                     </div>
                   </CardContent>
@@ -563,11 +602,16 @@ export default function DocumentsPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <FolderOpen className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No documents uploaded yet</h3>
-              <p className="text-gray-500 mb-4">Upload your first document to get started</p>
-              <Button onClick={() => fileInputRef.current?.click()} variant="outline">
+            <div className="text-center py-8 sm:py-12 px-4">
+              <FolderOpen className="h-12 w-12 sm:h-16 sm:w-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No documents uploaded yet</h3>
+              <p className="text-sm sm:text-base text-gray-500 mb-4">Upload your first document to get started</p>
+              <Button 
+                onClick={() => fileInputRef.current?.click()} 
+                variant="outline"
+                size={isMobile ? "lg" : "default"}
+                className="w-full sm:w-auto"
+              >
                 <Upload className="h-4 w-4 mr-2" />
                 Upload Document
               </Button>
@@ -579,17 +623,17 @@ export default function DocumentsPage() {
       {/* Document Categories Guide */}
       <Card>
         <CardHeader>
-          <CardTitle>Document Categories Guide</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-base sm:text-lg">Document Categories Guide</CardTitle>
+          <CardDescription className="text-sm">
             Organize your documents properly for easier access during application processes.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {documentCategories.map((category) => (
-              <div key={category.value} className="p-4 border border-gray-200 rounded-lg">
-                <h4 className="font-medium text-gray-900 mb-2">{category.label}</h4>
-                <p className="text-sm text-gray-600">
+              <div key={category.value} className="p-3 sm:p-4 border border-gray-200 rounded-lg">
+                <h4 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">{category.label}</h4>
+                <p className="text-xs sm:text-sm text-gray-600">
                   {category.value === "identity" && "Aadhaar, PAN Card, Passport, etc."}
                   {category.value === "address" && "Utility bills, rent agreement, property documents"}
                   {category.value === "business" && "Business registration, MOA, AOA, partnership deed"}
@@ -603,6 +647,67 @@ export default function DocumentsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Payment Dialog */}
+      <Dialog open={showPaymentDialog} onOpenChange={setShowPaymentDialog}>
+        <DialogContent className="sm:max-w-[425px] mx-4">
+          <DialogHeader>
+            <DialogTitle className="flex items-center space-x-2">
+              <CreditCard className="h-5 w-5" />
+              <span>Process Payment</span>
+            </DialogTitle>
+            <DialogDescription>
+              Complete the payment to finalize your document processing.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedDocument && (
+            <div className="space-y-4">
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <h4 className="font-medium text-gray-900 mb-2">Document Details</h4>
+                <p className="text-sm text-gray-600 mb-1">File: {selectedDocument.fileName}</p>
+                <p className="text-sm text-gray-600">Category: {documentCategories.find(cat => cat.value === selectedDocument.category)?.label}</p>
+              </div>
+              
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-blue-900">Processing Fee</p>
+                    <p className="text-sm text-blue-700">Government processing charges</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-blue-900 flex items-center">
+                      <IndianRupee className="h-5 w-5 mr-1" />
+                      {selectedDocument.processingFee}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-xs text-gray-500 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p><strong>Note:</strong> This fee is charged by the government for document verification and processing. Payment is secure and processed through authorized payment gateways.</p>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="flex-col sm:flex-row space-y-2 sm:space-y-0">
+            <Button variant="outline" onClick={() => setShowPaymentDialog(false)} className="w-full sm:w-auto">
+              Cancel
+            </Button>
+            <Button 
+              onClick={processPayment}
+              disabled={processPaymentMutation.isPending}
+              className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
+            >
+              {processPaymentMutation.isPending && (
+                <div className="loading-spinner mr-2" />
+              )}
+              <CreditCard className="h-4 w-4 mr-2" />
+              Pay ₹{selectedDocument?.processingFee}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
