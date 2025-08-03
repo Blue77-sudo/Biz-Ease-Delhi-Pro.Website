@@ -10,9 +10,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Building2, MapPin, Phone, Mail, Globe, Users, Calendar, Edit, Save, X } from "lucide-react";
+import { 
+  Building2, 
+  Mail, 
+  Phone, 
+  MapPin, 
+  Globe, 
+  Calendar, 
+  Users, 
+  FileText,
+  Shield,
+  Edit,
+  Save,
+  X
+} from "lucide-react";
 import { useAuthStore } from "@/lib/auth";
 import { translations } from "@/lib/translations";
+import { useToast } from "@/hooks/use-toast";
 
 const profileSchema = z.object({
   companyName: z.string().min(1, "Company name is required"),
