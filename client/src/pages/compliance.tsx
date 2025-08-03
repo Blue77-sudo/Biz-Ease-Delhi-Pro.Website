@@ -103,7 +103,8 @@ export default function CompliancePage() {
   const overallScore = 92;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gray-50">
+      <div className="container-desktop page-content">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.complianceTitle}</h1>

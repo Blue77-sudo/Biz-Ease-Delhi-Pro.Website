@@ -112,12 +112,18 @@ export default function SchemesPage() {
   ];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gray-50">
+      <div className="container-desktop page-content">
+      
+    
+      <div className="p-6 max-w-7xl mx-auto space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.schemesTitle}</h1>
-        <p className="text-gray-600">{t.schemesSubtitle}</p>
-      </div>
+      
+      <div className="mb-8">
+          <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 desktop-heading">{t.schemesTitle}</h1>
+          <p className="mt-2 text-gray-600 desktop-text">{t.schemesSubtitle}</p>
+        </div>
+      
 
       {/* Recommended Schemes */}
       <div className="nav-gradient rounded-xl p-6 text-white">
@@ -248,6 +254,8 @@ export default function SchemesPage() {
           </div>
         </CardContent>
       </Card>
+    </div>
+    </div>
     </div>
   );
 }

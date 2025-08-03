@@ -73,8 +73,8 @@ export function Navigation() {
 
   return (
     <header className="nav-gradient shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 desktop-nav">
+        <div className="flex items-center justify-between h-16 lg:h-20">
           
           {/* Logo and Title */}
           <div className="flex items-center space-x-4">
@@ -110,18 +110,18 @@ export function Navigation() {
             </Sheet>
             
             <Link href="/dashboard" className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-                <Building2 className="h-6 w-6 text-blue-600" />
+              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white rounded-lg flex items-center justify-center">
+                <Building2 className="h-6 w-6 lg:h-8 lg:w-8 text-blue-600" />
               </div>
               <div>
-                <h1 className="text-white font-bold text-lg">{t.portalTitle}</h1>
-                <p className="text-blue-100 text-xs">{t.portalSubtitle}</p>
+                <h1 className="text-white font-bold text-lg lg:text-xl">{t.portalTitle}</h1>
+                <p className="text-blue-100 text-xs lg:text-sm">{t.portalSubtitle}</p>
               </div>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex">
+          <nav className="hidden md:flex desktop-nav-items">
             <NavItems />
           </nav>
 

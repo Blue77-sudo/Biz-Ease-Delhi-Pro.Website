@@ -142,20 +142,21 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gray-50">
+      <div className="container-desktop page-content">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.dashboardTitle}</h1>
-        <p className="text-gray-600">{t.dashboardSubtitle}</p>
-      </div>
+      <div className="mb-8">
+          <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 desktop-heading">{t.dashboardTitle}</h1>
+          <p className="mt-2 text-gray-600 desktop-text">{t.dashboardSubtitle}</p>
+        </div>
 
-      {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 desktop-grid-4">
         {metrics.map((metric, index) => {
           const Icon = metric.icon;
           return (
-            <Card key={index} className={`${metric.color} card-hover`}>
-              <CardContent className="p-6">
+            <Card key={index} className="metric-card desktop-card">
+              <CardContent className="p-6 desktop-spacing">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-600 text-sm font-medium">{metric.title}</p>
@@ -248,6 +249,7 @@ export default function Dashboard() {
           </div>
         </CardContent>
       </Card>
+    </div>
     </div>
   );
 }
